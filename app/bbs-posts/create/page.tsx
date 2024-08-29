@@ -1,10 +1,10 @@
 "use client";
 
+import { postBBS } from "@/app/actions/postBBSAction";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,21 +18,21 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+export const formSchema = z.object({
+  username: z
+    .string()
+    .min(2, { message: "ユーザー名は2文字以上で入力してください。" }),
+  title: z
+    .string()
+    .min(2, { message: "タイトルは2文字以上で入力してください。" }),
+  content: z
+    .string()
+    .min(10, { message: "本文は10文字以上で入力してください。" })
+    .max(140, { message: "本文は140字以内で入力してください" }),
+});
+
 const CreateBBSPage = () => {
   const router = useRouter();
-  const formSchema = z.object({
-    username: z
-      .string()
-      .min(2, { message: "ユーザー名は2文字以上で入力してください。" }),
-    title: z
-      .string()
-      .min(2, { message: "タイトルは2文字以上で入力してください。" }),
-    content: z
-      .string()
-      .min(10, { message: "本文は10文字以上で入力してください。" })
-      .max(140, { message: "本文は140字以内で入力してください" }),
-  });
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,18 +44,7 @@ const CreateBBSPage = () => {
 
   async function onSubmit(value: z.infer<typeof formSchema>) {
     const { username, title, content } = value;
-    try {
-      await fetch("http://localhost:3000/api/post", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, title, content }),
-      });
-      router.push("/");
-    } catch (err) {
-      console.error(err);
-    }
+    postBBS({ username, title, content });
   }
 
   return (

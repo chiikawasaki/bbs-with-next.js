@@ -6,14 +6,14 @@ export async function GET(req: Request) {
   return NextResponse.json(allBBSPosts);
 }
 
-export async function POST(req: Request) {
-  const { username, title, content } = await req.json();
-  const allBBSPosts = await prisma.post.create({
-    data: {
-      username,
-      title,
-      content,
-    },
-  });
-  return NextResponse.json(allBBSPosts);
-}
+// export async function POST(req: Request) {
+//   const { username, title, content } = await req.json();
+//   const allBBSPosts = await prisma.post.create({
+//     data: {
+//       username,
+//       title,
+//       content,
+//     },
+//   });
+//   return NextResponse.json(allBBSPosts);
+// }
