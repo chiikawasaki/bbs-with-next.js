@@ -13,11 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const CreateBBSPage = () => {
+  const router = useRouter();
   const formSchema = z.object({
     username: z
       .string()
@@ -40,7 +42,21 @@ const CreateBBSPage = () => {
     },
   });
 
-  async function onSubmit() {}
+  async function onSubmit(value: z.infer<typeof formSchema>) {
+    const { username, title, content } = value;
+    try {
+      await fetch("http://localhost:3000/api/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, title, content }),
+      });
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <Form {...form}>
